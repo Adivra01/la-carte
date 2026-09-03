@@ -11,6 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreerRouteImport } from './routes/creer'
+import { Route as AdminTokenRouteImport } from './routes/admin.$token'
+import { Route as MSlugRouteImport } from './routes/m.$slug'
+import { Route as PaiementSlugRouteImport } from './routes/paiement.$slug'
+import { Route as SuccesSlugRouteImport } from './routes/succes.$slug'
+import { Route as ApiPublicImgRouteImport } from './routes/api.public.img'
+import { Route as ApiPublicPdfSlugRouteImport } from './routes/api.public.pdf.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +28,110 @@ const CreerRoute = CreerRouteImport.update({
   path: '/creer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTokenRoute = AdminTokenRouteImport.update({
+  id: '/admin/$token',
+  path: '/admin/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MSlugRoute = MSlugRouteImport.update({
+  id: '/m/$slug',
+  path: '/m/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaiementSlugRoute = PaiementSlugRouteImport.update({
+  id: '/paiement/$slug',
+  path: '/paiement/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuccesSlugRoute = SuccesSlugRouteImport.update({
+  id: '/succes/$slug',
+  path: '/succes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicImgRoute = ApiPublicImgRouteImport.update({
+  id: '/api/public/img',
+  path: '/api/public/img',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPdfSlugRoute = ApiPublicPdfSlugRouteImport.update({
+  id: '/api/public/pdf/$slug',
+  path: '/api/public/pdf/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
+  '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
+  '/succes/$slug': typeof SuccesSlugRoute
+  '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
+  '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
+  '/succes/$slug': typeof SuccesSlugRoute
+  '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
+  '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
+  '/succes/$slug': typeof SuccesSlugRoute
+  '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/creer'
+  fullPaths:
+    | '/'
+    | '/creer'
+    | '/admin/$token'
+    | '/m/$slug'
+    | '/paiement/$slug'
+    | '/succes/$slug'
+    | '/api/public/img'
+    | '/api/public/pdf/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer'
-  id: '__root__' | '/' | '/creer'
+  to:
+    | '/'
+    | '/creer'
+    | '/admin/$token'
+    | '/m/$slug'
+    | '/paiement/$slug'
+    | '/succes/$slug'
+    | '/api/public/img'
+    | '/api/public/pdf/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/creer'
+    | '/admin/$token'
+    | '/m/$slug'
+    | '/paiement/$slug'
+    | '/succes/$slug'
+    | '/api/public/img'
+    | '/api/public/pdf/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreerRoute: typeof CreerRoute
+  AdminTokenRoute: typeof AdminTokenRoute
+  MSlugRoute: typeof MSlugRoute
+  PaiementSlugRoute: typeof PaiementSlugRoute
+  SuccesSlugRoute: typeof SuccesSlugRoute
+  ApiPublicImgRoute: typeof ApiPublicImgRoute
+  ApiPublicPdfSlugRoute: typeof ApiPublicPdfSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +150,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/$token': {
+      id: '/admin/$token'
+      path: '/admin/$token'
+      fullPath: '/admin/$token'
+      preLoaderRoute: typeof AdminTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m/$slug': {
+      id: '/m/$slug'
+      path: '/m/$slug'
+      fullPath: '/m/$slug'
+      preLoaderRoute: typeof MSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paiement/$slug': {
+      id: '/paiement/$slug'
+      path: '/paiement/$slug'
+      fullPath: '/paiement/$slug'
+      preLoaderRoute: typeof PaiementSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/succes/$slug': {
+      id: '/succes/$slug'
+      path: '/succes/$slug'
+      fullPath: '/succes/$slug'
+      preLoaderRoute: typeof SuccesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/img': {
+      id: '/api/public/img'
+      path: '/api/public/img'
+      fullPath: '/api/public/img'
+      preLoaderRoute: typeof ApiPublicImgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/pdf/$slug': {
+      id: '/api/public/pdf/$slug'
+      path: '/api/public/pdf/$slug'
+      fullPath: '/api/public/pdf/$slug'
+      preLoaderRoute: typeof ApiPublicPdfSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreerRoute: CreerRoute,
+  AdminTokenRoute: AdminTokenRoute,
+  MSlugRoute: MSlugRoute,
+  PaiementSlugRoute: PaiementSlugRoute,
+  SuccesSlugRoute: SuccesSlugRoute,
+  ApiPublicImgRoute: ApiPublicImgRoute,
+  ApiPublicPdfSlugRoute: ApiPublicPdfSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
