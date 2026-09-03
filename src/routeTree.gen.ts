@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreerRouteImport } from './routes/creer'
+import { Route as AdminTokenRouteImport } from './routes/admin.$token'
 import { Route as MSlugRouteImport } from './routes/m.$slug'
 import { Route as PaiementSlugRouteImport } from './routes/paiement.$slug'
 import { Route as SuccesSlugRouteImport } from './routes/succes.$slug'
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const CreerRoute = CreerRouteImport.update({
   id: '/creer',
   path: '/creer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTokenRoute = AdminTokenRouteImport.update({
+  id: '/admin/$token',
+  path: '/admin/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MSlugRoute = MSlugRouteImport.update({
@@ -56,6 +62,7 @@ const ApiPublicPdfSlugRoute = ApiPublicPdfSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
   '/m/$slug': typeof MSlugRoute
   '/paiement/$slug': typeof PaiementSlugRoute
   '/succes/$slug': typeof SuccesSlugRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
   '/m/$slug': typeof MSlugRoute
   '/paiement/$slug': typeof PaiementSlugRoute
   '/succes/$slug': typeof SuccesSlugRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/admin/$token': typeof AdminTokenRoute
   '/m/$slug': typeof MSlugRoute
   '/paiement/$slug': typeof PaiementSlugRoute
   '/succes/$slug': typeof SuccesSlugRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/creer'
+    | '/admin/$token'
     | '/m/$slug'
     | '/paiement/$slug'
     | '/succes/$slug'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/creer'
+    | '/admin/$token'
     | '/m/$slug'
     | '/paiement/$slug'
     | '/succes/$slug'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/creer'
+    | '/admin/$token'
     | '/m/$slug'
     | '/paiement/$slug'
     | '/succes/$slug'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreerRoute: typeof CreerRoute
+  AdminTokenRoute: typeof AdminTokenRoute
   MSlugRoute: typeof MSlugRoute
   PaiementSlugRoute: typeof PaiementSlugRoute
   SuccesSlugRoute: typeof SuccesSlugRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/creer'
       fullPath: '/creer'
       preLoaderRoute: typeof CreerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/$token': {
+      id: '/admin/$token'
+      path: '/admin/$token'
+      fullPath: '/admin/$token'
+      preLoaderRoute: typeof AdminTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m/$slug': {
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreerRoute: CreerRoute,
+  AdminTokenRoute: AdminTokenRoute,
   MSlugRoute: MSlugRoute,
   PaiementSlugRoute: PaiementSlugRoute,
   SuccesSlugRoute: SuccesSlugRoute,
