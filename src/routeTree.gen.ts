@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreerRouteImport } from './routes/creer'
 import { Route as ApiPublicImgRouteImport } from './routes/api.public.img'
+import { Route as ApiPublicPdfSlugRouteImport } from './routes/api.public.pdf.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const ApiPublicImgRoute = ApiPublicImgRouteImport.update({
   path: '/api/public/img',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPdfSlugRoute = ApiPublicPdfSlugRouteImport.update({
+  id: '/api/public/pdf/$slug',
+  path: '/api/public/pdf/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/api/public/img': typeof ApiPublicImgRoute
+  '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/creer' | '/api/public/img'
+  fullPaths: '/' | '/creer' | '/api/public/img' | '/api/public/pdf/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer' | '/api/public/img'
-  id: '__root__' | '/' | '/creer' | '/api/public/img'
+  to: '/' | '/creer' | '/api/public/img' | '/api/public/pdf/$slug'
+  id: '__root__' | '/' | '/creer' | '/api/public/img' | '/api/public/pdf/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreerRoute: typeof CreerRoute
   ApiPublicImgRoute: typeof ApiPublicImgRoute
+  ApiPublicPdfSlugRoute: typeof ApiPublicPdfSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicImgRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/pdf/$slug': {
+      id: '/api/public/pdf/$slug'
+      path: '/api/public/pdf/$slug'
+      fullPath: '/api/public/pdf/$slug'
+      preLoaderRoute: typeof ApiPublicPdfSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreerRoute: CreerRoute,
   ApiPublicImgRoute: ApiPublicImgRoute,
+  ApiPublicPdfSlugRoute: ApiPublicPdfSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
