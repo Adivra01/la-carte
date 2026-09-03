@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreerRouteImport } from './routes/creer'
 import { Route as MSlugRouteImport } from './routes/m.$slug'
+import { Route as PaiementSlugRouteImport } from './routes/paiement.$slug'
 import { Route as ApiPublicImgRouteImport } from './routes/api.public.img'
 import { Route as ApiPublicPdfSlugRouteImport } from './routes/api.public.pdf.$slug'
 
@@ -30,6 +31,11 @@ const MSlugRoute = MSlugRouteImport.update({
   path: '/m/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaiementSlugRoute = PaiementSlugRouteImport.update({
+  id: '/paiement/$slug',
+  path: '/paiement/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicImgRoute = ApiPublicImgRouteImport.update({
   id: '/api/public/img',
   path: '/api/public/img',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
   '/api/public/img': typeof ApiPublicImgRoute
   '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
   '/api/public/img': typeof ApiPublicImgRoute
   '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
@@ -60,20 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
   '/m/$slug': typeof MSlugRoute
+  '/paiement/$slug': typeof PaiementSlugRoute
   '/api/public/img': typeof ApiPublicImgRoute
   '/api/public/pdf/$slug': typeof ApiPublicPdfSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/creer' | '/m/$slug' | '/api/public/img' | '/api/public/pdf/$slug'
+    | '/'
+    | '/creer'
+    | '/m/$slug'
+    | '/paiement/$slug'
+    | '/api/public/img'
+    | '/api/public/pdf/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer' | '/m/$slug' | '/api/public/img' | '/api/public/pdf/$slug'
+  to:
+    | '/'
+    | '/creer'
+    | '/m/$slug'
+    | '/paiement/$slug'
+    | '/api/public/img'
+    | '/api/public/pdf/$slug'
   id:
     | '__root__'
     | '/'
     | '/creer'
     | '/m/$slug'
+    | '/paiement/$slug'
     | '/api/public/img'
     | '/api/public/pdf/$slug'
   fileRoutesById: FileRoutesById
@@ -82,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreerRoute: typeof CreerRoute
   MSlugRoute: typeof MSlugRoute
+  PaiementSlugRoute: typeof PaiementSlugRoute
   ApiPublicImgRoute: typeof ApiPublicImgRoute
   ApiPublicPdfSlugRoute: typeof ApiPublicPdfSlugRoute
 }
@@ -109,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/paiement/$slug': {
+      id: '/paiement/$slug'
+      path: '/paiement/$slug'
+      fullPath: '/paiement/$slug'
+      preLoaderRoute: typeof PaiementSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/img': {
       id: '/api/public/img'
       path: '/api/public/img'
@@ -130,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreerRoute: CreerRoute,
   MSlugRoute: MSlugRoute,
+  PaiementSlugRoute: PaiementSlugRoute,
   ApiPublicImgRoute: ApiPublicImgRoute,
   ApiPublicPdfSlugRoute: ApiPublicPdfSlugRoute,
 }
