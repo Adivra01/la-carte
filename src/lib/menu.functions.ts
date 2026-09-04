@@ -26,6 +26,8 @@ export type PublicMenu = {
     city: string | null;
     whatsapp: string | null;
     plan: string;
+    theme: string;
+    accent: string | null;
     previewExpiresAt: string;
     expired: boolean;
     unlocked: boolean;
@@ -77,6 +79,8 @@ const createSchema = z.object({
   restaurantName: z.string().min(2),
   city: z.string().min(1),
   whatsapp: z.string().min(6),
+  theme: z.string().default("feu"),
+  accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().default(null),
   categories: z
     .array(
       z.object({
@@ -120,6 +124,8 @@ export const createMenu = createServerFn({ method: "POST" })
         slug,
         city: data.city,
         whatsapp: data.whatsapp,
+        theme: data.theme,
+        accent: data.accent,
       })
       .select("id, slug, admin_token")
       .single();
@@ -193,7 +199,7 @@ export const getPublicMenu = createServerFn({ method: "GET" })
     const db = await admin();
     const { data: restaurant } = await db
       .from("restaurants")
-      .select("id, name, slug, city, whatsapp, plan, preview_expires_at")
+      .select("id, name, slug, city, whatsapp, plan, theme, accent, preview_expires_at")
       .eq("slug", data.slug)
       .maybeSingle();
     if (!restaurant) return null;
@@ -241,6 +247,8 @@ export const getPublicMenu = createServerFn({ method: "GET" })
         city: restaurant.city,
         whatsapp: restaurant.whatsapp,
         plan: restaurant.plan,
+        theme: restaurant.theme,
+        accent: restaurant.accent,
         previewExpiresAt: restaurant.preview_expires_at,
         expired,
         unlocked,
@@ -340,7 +348,7 @@ export const getAdminMenu = createServerFn({ method: "GET" })
     const db = await admin();
     const { data: restaurant } = await db
       .from("restaurants")
-      .select("id, name, slug, city, whatsapp, plan")
+      .select("id, name, slug, city, whatsapp, plan, theme, accent")
       .eq("admin_token", data.token)
       .maybeSingle();
     if (!restaurant) return null;
@@ -432,4 +440,29 @@ export const addDish = createServerFn({ method: "POST" })
       .single();
     if (error || !dish) throw new Error(error?.message ?? "Ajout impossible");
     return { id: dish.id };
+  });
+
+const themeSchema = z.object({
+  token: z.string().min(10),
+  theme: z.string().min(1),
+  accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().default(null),
+});
+
+export const setMenuTheme = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => themeSchema.parse(input))
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { data: restaurant } = await db
+      .from("restaurants")
+      .select("id")
+      .eq("admin_token", data.token)
+      .maybeSingle();
+    if (!restaurant) throw new Error("Lien d'administration invalide");
+
+    const { error } = await db
+      .from("restaurants")
+      .update({ theme: data.theme, accent: data.accent })
+      .eq("id", restaurant.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
