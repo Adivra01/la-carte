@@ -66,7 +66,7 @@ export const extractMenuDraft = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { extractMenu } = await import("./menuai.server");
     if (!data.file && !data.text?.trim()) throw new Error("Aucun contenu fourni.");
-    return await extractMenu({ text: data.text, file: data.file });
+    return await extractMenu({ ...(data.text ? { text: data.text } : {}), ...(data.file ? { file: data.file } : {}) });
   });
 
 /* -------------------------------------------------------------------------- */
@@ -379,7 +379,7 @@ export const updateDish = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!restaurant) throw new Error("Lien d'administration invalide");
 
-    const patch: Record<string, unknown> = {};
+    const patch: Record<string, string | number | boolean | null> = {};
     if (data.name !== undefined) patch["name"] = data.name;
     if (data.description !== undefined) patch["description"] = data.description;
     if (data.price !== undefined) patch["price"] = data.price;
