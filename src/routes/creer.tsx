@@ -14,6 +14,8 @@ import {
   type PlanKey,
 } from "@/lib/menu.functions";
 import { ArrowLeft, FileUp, Loader2, Sparkles, Trash2 } from "lucide-react";
+import { ThemePicker } from "@/components/theme-picker";
+import { DEFAULT_THEME_ID } from "@/lib/menu-themes";
 
 export const Route = createFileRoute("/creer")({
   head: () => ({
@@ -65,6 +67,8 @@ function CreatePage() {
   const [name, setName] = useState("");
   const [city, setCity] = useState("Bamako");
   const [whatsapp, setWhatsapp] = useState("");
+  const [themeId, setThemeId] = useState(DEFAULT_THEME_ID);
+  const [accent, setAccent] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
 
@@ -125,7 +129,14 @@ function CreatePage() {
     setProgressLabel("Création de ta vitrine…");
     try {
       const created = await create({
-        data: { restaurantName: name.trim(), city, whatsapp: whatsapp.trim(), categories },
+        data: {
+          restaurantName: name.trim(),
+          city,
+          whatsapp: whatsapp.trim(),
+          theme: themeId,
+          accent,
+          categories,
+        },
       });
 
       const total = created.dishes.length;
@@ -272,6 +283,29 @@ function CreatePage() {
                 </div>
               </div>
             </div>
+
+            <section className="mt-10">
+              <h2 className="text-xl font-bold">Choisis le style de ta carte</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Fond, couleurs et ambiance. Tu pourras encore changer après la génération.
+              </p>
+              <div className="mt-4">
+                <ThemePicker
+                  themeId={themeId}
+                  accent={accent}
+                  onThemeChange={setThemeId}
+                  onAccentChange={setAccent}
+                  {...(categories[0]?.dishes[0]
+                    ? {
+                        sample: {
+                          name: categories[0].dishes[0].name,
+                          price: categories[0].dishes[0].price,
+                        },
+                      }
+                    : {})}
+                />
+              </div>
+            </section>
 
             <div className="mt-8 space-y-6">
               {categories.map((cat, ci) => (
