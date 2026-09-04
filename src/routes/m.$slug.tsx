@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Download, Lock, MessageCircle, QrCode, Timer } from "lucide-react";
 import { getTheme } from "@/lib/menu-themes";
 import { Button } from "@/components/ui/button";
@@ -73,7 +73,7 @@ function MenuPage() {
     "--input": theme.border,
     "--ink": theme.text,
     "--ink-foreground": theme.bg,
-  } as React.CSSProperties;
+  } as CSSProperties;
 
   const hoursLeft = Math.max(
     0,
