@@ -118,7 +118,7 @@ function AdminPage() {
       <h1 className="text-3xl font-bold">{data.restaurant.name}</h1>
       <p className="mt-1 text-muted-foreground">Gestion du menu · lien privé</p>
       <Button asChild variant="outline" size="sm" className="mt-4">
-        <Link to="/m/$slug" params={{ slug: data.restaurant.slug }}>
+        <Link to="/m/$slug" params={{ slug: data.restaurant.slug }} search={{ admin: undefined }}>
           Voir la page publique
         </Link>
       </Button>

@@ -73,7 +73,7 @@ function PaiementPage() {
 
   return (
     <div className="mx-auto max-w-lg px-5 py-12">
-      <Link to="/m/$slug" params={{ slug }} className="text-sm text-muted-foreground">
+      <Link to="/m/$slug" params={{ slug }} search={{ admin: undefined }} className="text-sm text-muted-foreground">
         ← Retour au menu
       </Link>
       <h1 className="mt-4 text-3xl font-bold">Déverrouille ton menu</h1>

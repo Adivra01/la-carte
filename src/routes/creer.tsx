@@ -111,8 +111,14 @@ function CreatePage() {
   }
 
   async function publish() {
-    if (name.trim().length < 2) return toast.error("Indique le nom du restaurant.");
-    if (whatsapp.trim().length < 6) return toast.error("Indique un numéro WhatsApp.");
+    if (name.trim().length < 2) {
+      toast.error("Indique le nom du restaurant.");
+      return;
+    }
+    if (whatsapp.trim().length < 6) {
+      toast.error("Indique un numéro WhatsApp.");
+      return;
+    }
 
     setStep("building");
     setProgress(5);
