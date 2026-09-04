@@ -155,6 +155,7 @@ export type Database = {
       }
       restaurants: {
         Row: {
+          accent: string | null
           admin_token: string
           city: string | null
           created_at: string
@@ -163,10 +164,12 @@ export type Database = {
           plan: string
           preview_expires_at: string
           slug: string
+          theme: string
           updated_at: string
           whatsapp: string | null
         }
         Insert: {
+          accent?: string | null
           admin_token?: string
           city?: string | null
           created_at?: string
@@ -175,10 +178,12 @@ export type Database = {
           plan?: string
           preview_expires_at?: string
           slug: string
+          theme?: string
           updated_at?: string
           whatsapp?: string | null
         }
         Update: {
+          accent?: string | null
           admin_token?: string
           city?: string | null
           created_at?: string
@@ -187,6 +192,7 @@ export type Database = {
           plan?: string
           preview_expires_at?: string
           slug?: string
+          theme?: string
           updated_at?: string
           whatsapp?: string | null
         }
