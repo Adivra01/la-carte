@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { Lock, MessageCircle, QrCode, Timer } from "lucide-react";
+import { useState, type CSSProperties } from "react";
+import { Download, Lock, MessageCircle, QrCode, Timer } from "lucide-react";
+import { getTheme } from "@/lib/menu-themes";
 import { Button } from "@/components/ui/button";
 import { getPublicMenu } from "@/lib/menu.functions";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,23 @@ function MenuPage() {
   const { admin } = Route.useSearch();
   const { restaurant, categories } = menu;
   const [active, setActive] = useState(categories[0]?.id ?? "");
+  const theme = getTheme(restaurant.theme, restaurant.accent);
+  const themeVars = {
+    "--background": theme.bg,
+    "--foreground": theme.text,
+    "--card": theme.surface,
+    "--card-foreground": theme.text,
+    "--muted": theme.border,
+    "--muted-foreground": theme.muted,
+    "--primary": theme.accent,
+    "--primary-foreground": theme.accentText,
+    "--secondary": theme.surface,
+    "--secondary-foreground": theme.text,
+    "--border": theme.border,
+    "--input": theme.border,
+    "--ink": theme.text,
+    "--ink-foreground": theme.bg,
+  } as CSSProperties;
 
   const hoursLeft = Math.max(
     0,
@@ -71,7 +89,13 @@ function MenuPage() {
   }
 
   return (
-    <div className={cn("min-h-screen pb-24", !restaurant.unlocked && "watermark-grid")}>
+    <div
+      style={themeVars}
+      className={cn(
+        "min-h-screen bg-background pb-24 text-foreground",
+        !restaurant.unlocked && "watermark-grid",
+      )}
+    >
       <header className="border-b border-border/60 bg-card">
         <div className="mx-auto max-w-3xl px-5 py-8">
           {!restaurant.unlocked && (
@@ -97,6 +121,13 @@ function MenuPage() {
                 </Link>
               </Button>
             </div>
+          )}
+          {restaurant.unlocked && (
+            <Button asChild variant="outline" size="sm" className="mt-4 mr-2">
+              <a href={`/api/public/pdf/${restaurant.slug}`}>
+                <Download className="mr-1 size-4" /> Brochure PDF à imprimer
+              </a>
+            </Button>
           )}
           {admin && (
             <Button asChild variant="outline" size="sm" className="mt-4">
