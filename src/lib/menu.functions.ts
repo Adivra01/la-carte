@@ -379,11 +379,16 @@ export const updateDish = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!restaurant) throw new Error("Lien d'administration invalide");
 
-    const patch: Record<string, string | number | boolean | null> = {};
-    if (data.name !== undefined) patch["name"] = data.name;
-    if (data.description !== undefined) patch["description"] = data.description;
-    if (data.price !== undefined) patch["price"] = data.price;
-    if (data.available !== undefined) patch["available"] = data.available;
+    const patch: {
+      name?: string;
+      description?: string | null;
+      price?: number | null;
+      available?: boolean;
+    } = {};
+    if (data.name !== undefined) patch.name = data.name;
+    if (data.description !== undefined) patch.description = data.description;
+    if (data.price !== undefined) patch.price = data.price;
+    if (data.available !== undefined) patch.available = data.available;
 
     const { error } = await db
       .from("dishes")
