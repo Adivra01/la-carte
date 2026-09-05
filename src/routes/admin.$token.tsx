@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { addDish, getAdminMenu, updateDish } from "@/lib/menu.functions";
+import { ThemePicker } from "@/components/theme-picker";
+import { addDish, getAdminMenu, setMenuTheme, updateDish } from "@/lib/menu.functions";
 
 type AdminData = Awaited<ReturnType<typeof getAdminMenu>>;
 
