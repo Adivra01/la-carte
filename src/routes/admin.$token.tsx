@@ -137,6 +137,22 @@ function AdminPage() {
         </Link>
       </Button>
 
+      <section className="mt-10">
+        <h2 className="text-lg font-bold">Style de la carte</h2>
+        <p className="mb-3 text-sm text-muted-foreground">
+          Change les couleurs quand tu veux : la page publique et la brochure à imprimer suivent.
+        </p>
+        <ThemePicker
+          themeId={data.restaurant.theme ?? "feu"}
+          accent={data.restaurant.accent ?? null}
+          onThemeChange={(id) => void applyTheme(id, data.restaurant.accent ?? null)}
+          onAccentChange={(a) => void applyTheme(data.restaurant.theme ?? "feu", a)}
+          {...(data.dishes[0]
+            ? { sample: { name: data.dishes[0].name, price: data.dishes[0].price } }
+            : {})}
+        />
+      </section>
+
       {data.categories.map((category) => (
         <section key={category.id} className="mt-10">
           <h2 className="text-lg font-bold">{category.name}</h2>
