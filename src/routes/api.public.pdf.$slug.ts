@@ -64,6 +64,10 @@ export const Route = createFileRoute("/api/public/pdf/$slug")({
             .replace(/[\u2018\u2019\u2032]/g, "'")
             .replace(/[\u201c\u201d]/g, '"')
             .replace(/[\u2013\u2014]/g, "-")
+            .replace(/\u0153/g, "oe")
+            .replace(/\u0152/g, "OE")
+            .replace(/\u00e6/g, "ae")
+            .replace(/\u00c6/g, "AE")
             .replace(/\u2026/g, "...")
             .replace(/[^\x20-\xFF]/g, "");
 
@@ -122,7 +126,7 @@ export const Route = createFileRoute("/api/public/pdf/$slug")({
           const list = (dishes ?? []).filter((d) => d.category_id === category.id);
           if (!list.length) continue;
 
-          if (y < M + 160) newPage();
+          if (y < M + 300) newPage();
           const label = clean(category.name).toUpperCase();
           const labelW = bold.widthOfTextAtSize(label, 11) + 20;
           page.drawRectangle({
@@ -222,7 +226,7 @@ export const Route = createFileRoute("/api/public/pdf/$slug")({
 
         /* -------------------------------- pied -------------------------------- */
         for (const p of pdf.getPages()) {
-          p.drawText("Cree avec MenuAI", {
+          p.drawText("Créé avec MenuAI", {
             x: M,
             y: 20,
             size: 8,
