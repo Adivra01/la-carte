@@ -58,7 +58,14 @@ export const Route = createFileRoute("/api/public/pdf/$slug")({
         const CARD_W = (W - M * 2 - GAP * (COLS - 1)) / COLS;
         const IMG_H = CARD_W * 0.62;
 
-        const clean = (s: string) => s.replace(/[^\x20-\xFF]/g, "");
+        const clean = (s: string) =>
+          s
+            .replace(/[\u00a0\u202f\u2009\u2007]/g, " ")
+            .replace(/[\u2018\u2019\u2032]/g, "'")
+            .replace(/[\u201c\u201d]/g, '"')
+            .replace(/[\u2013\u2014]/g, "-")
+            .replace(/\u2026/g, "...")
+            .replace(/[^\x20-\xFF]/g, "");
 
         // Images des plats (embarquées une seule fois)
         const imageCache = new Map<string, Awaited<ReturnType<typeof pdf.embedPng>> | null>();
