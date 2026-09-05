@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { addDish, getAdminMenu, updateDish } from "@/lib/menu.functions";
+import { ThemePicker } from "@/components/theme-picker";
+import { addDish, getAdminMenu, setMenuTheme, updateDish } from "@/lib/menu.functions";
 
 type AdminData = Awaited<ReturnType<typeof getAdminMenu>>;
 
@@ -33,6 +34,8 @@ function AdminPage() {
   const load = useServerFn(getAdminMenu);
   const save = useServerFn(updateDish);
   const create = useServerFn(addDish);
+  const saveTheme = useServerFn(setMenuTheme);
+
 
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,6 +61,17 @@ function AdminPage() {
       await save({ data: { token, dishId, ...patch } });
     } catch {
       toast.error("Enregistrement impossible");
+    }
+  }
+
+  async function applyTheme(theme: string, accent: string | null) {
+    setData((prev) =>
+      prev ? { ...prev, restaurant: { ...prev.restaurant, theme, accent } } : prev,
+    );
+    try {
+      await saveTheme({ data: { token, theme, accent } });
+    } catch {
+      toast.error("Changement de style impossible");
     }
   }
 
@@ -122,6 +136,22 @@ function AdminPage() {
           Voir la page publique
         </Link>
       </Button>
+
+      <section className="mt-10">
+        <h2 className="text-lg font-bold">Style de la carte</h2>
+        <p className="mb-3 text-sm text-muted-foreground">
+          Change les couleurs quand tu veux : la page publique et la brochure à imprimer suivent.
+        </p>
+        <ThemePicker
+          themeId={data.restaurant.theme ?? "feu"}
+          accent={data.restaurant.accent ?? null}
+          onThemeChange={(id) => void applyTheme(id, data.restaurant.accent ?? null)}
+          onAccentChange={(a) => void applyTheme(data.restaurant.theme ?? "feu", a)}
+          {...(data.dishes[0]
+            ? { sample: { name: data.dishes[0].name, price: data.dishes[0].price } }
+            : {})}
+        />
+      </section>
 
       {data.categories.map((category) => (
         <section key={category.id} className="mt-10">
