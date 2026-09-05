@@ -64,6 +64,17 @@ function AdminPage() {
     }
   }
 
+  async function applyTheme(theme: string, accent: string | null) {
+    setData((prev) =>
+      prev ? { ...prev, restaurant: { ...prev.restaurant, theme, accent } } : prev,
+    );
+    try {
+      await saveTheme({ data: { token, theme, accent } });
+    } catch {
+      toast.error("Changement de style impossible");
+    }
+  }
+
   async function handleAdd(categoryId: string) {
     const name = (newDish[categoryId] ?? "").trim();
     if (!name) return;
