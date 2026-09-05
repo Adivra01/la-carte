@@ -180,7 +180,7 @@ export const Route = createFileRoute("/api/public/pdf/$slug")({
 
               cy -= 18;
               const priceText = layout.dish.price
-                ? `${layout.dish.price.toLocaleString("fr-FR")} F`
+                ? clean(`${layout.dish.price.toLocaleString("fr-FR")} F`)
                 : "";
               const priceW = priceText ? bold.widthOfTextAtSize(priceText, 11) : 0;
               layout.nameLines.forEach((line, li) => {
