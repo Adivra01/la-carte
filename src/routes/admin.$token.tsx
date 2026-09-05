@@ -34,6 +34,8 @@ function AdminPage() {
   const load = useServerFn(getAdminMenu);
   const save = useServerFn(updateDish);
   const create = useServerFn(addDish);
+  const saveTheme = useServerFn(setMenuTheme);
+
 
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
