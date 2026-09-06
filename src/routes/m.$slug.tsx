@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
-import { Download, Lock, MessageCircle, QrCode, Timer } from "lucide-react";
+import { Download, MessageCircle, QrCode } from "lucide-react";
 import { getTheme } from "@/lib/menu-themes";
 import { Button } from "@/components/ui/button";
 import { getPublicMenu } from "@/lib/menu.functions";
@@ -75,11 +75,6 @@ function MenuPage() {
     "--ink-foreground": theme.bg,
   } as CSSProperties;
 
-  const hoursLeft = Math.max(
-    0,
-    Math.round((new Date(restaurant.previewExpiresAt).getTime() - Date.now()) / 3_600_000),
-  );
-
   function whatsappLink(dishName: string) {
     const digits = (restaurant.whatsapp ?? "").replace(/\D/g, "");
     const text = encodeURIComponent(
@@ -91,44 +86,19 @@ function MenuPage() {
   return (
     <div
       style={themeVars}
-      className={cn(
-        "min-h-screen bg-background pb-24 text-foreground",
-        !restaurant.unlocked && "watermark-grid",
-      )}
+      className="min-h-screen bg-background pb-24 text-foreground"
     >
       <header className="border-b border-border/60 bg-card">
         <div className="mx-auto max-w-3xl px-5 py-8">
-          {!restaurant.unlocked && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-              Aperçu MenuAI
-            </span>
-          )}
-          <h1 className="mt-3 text-3xl font-bold">{restaurant.name}</h1>
+          <h1 className="text-3xl font-bold">{restaurant.name}</h1>
           <p className="mt-1 text-muted-foreground">
             {[restaurant.city, restaurant.whatsapp].filter(Boolean).join(" · ")}
           </p>
-          {!restaurant.unlocked && (
-            <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
-              <Timer className="size-5 text-primary" />
-              <p className="flex-1 text-sm">
-                {restaurant.expired
-                  ? "L'aperçu a expiré. Déverrouille ton menu pour le remettre en ligne."
-                  : `Aperçu gratuit : il reste ${hoursLeft} h avant expiration.`}
-              </p>
-              <Button asChild size="sm">
-                <Link to="/paiement/$slug" params={{ slug: restaurant.slug }}>
-                  Déverrouiller
-                </Link>
-              </Button>
-            </div>
-          )}
-          {restaurant.unlocked && (
-            <Button asChild variant="outline" size="sm" className="mt-4 mr-2">
-              <a href={`/api/public/pdf/${restaurant.slug}`}>
-                <Download className="mr-1 size-4" /> Brochure PDF à imprimer
-              </a>
-            </Button>
-          )}
+          <Button asChild variant="outline" size="sm" className="mt-4 mr-2">
+            <a href={`/api/public/pdf/${restaurant.slug}`}>
+              <Download className="mr-1 size-4" /> Brochure PDF à imprimer
+            </a>
+          </Button>
           {admin && (
             <Button asChild variant="outline" size="sm" className="mt-4">
               <Link to="/admin/$token" params={{ token: admin }}>
@@ -177,10 +147,7 @@ function MenuPage() {
                           src={src}
                           alt={`Photo du plat ${dish.name}`}
                           loading="lazy"
-                          className={cn(
-                            "size-full object-cover",
-                            dish.locked && "blur-md scale-110",
-                          )}
+                          className="size-full object-cover"
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center text-2xl">
@@ -189,7 +156,7 @@ function MenuPage() {
                       )}
                     </div>
 
-                    <div className={cn("flex-1", dish.locked && "select-none blur-[5px]")}>
+                    <div className="flex-1">
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="font-semibold">{dish.name}</h3>
                         {dish.price !== null && (
@@ -206,7 +173,7 @@ function MenuPage() {
                           Indisponible
                         </p>
                       )}
-                      {dish.available && restaurant.whatsapp && !dish.locked && (
+                      {dish.available && restaurant.whatsapp && (
                         <a
                           href={whatsappLink(dish.name)}
                           target="_blank"
@@ -218,15 +185,6 @@ function MenuPage() {
                       )}
                     </div>
 
-                    {dish.locked && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-background/40">
-                        <Button asChild size="sm" variant="secondary">
-                          <Link to="/paiement/$slug" params={{ slug: restaurant.slug }}>
-                            <Lock className="mr-1 size-3.5" /> Déverrouiller
-                          </Link>
-                        </Button>
-                      </div>
-                    )}
                   </article>
                 );
               })}

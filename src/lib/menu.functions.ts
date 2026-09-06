@@ -35,8 +35,6 @@ export type PublicMenu = {
   categories: { id: string; name: string; dishes: PublicDish[] }[];
 };
 
-const FREE_VISIBLE_DISHES = 2;
-
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
@@ -204,8 +202,8 @@ export const getPublicMenu = createServerFn({ method: "GET" })
       .maybeSingle();
     if (!restaurant) return null;
 
-    const unlocked = restaurant.plan !== "free";
-    const expired = !unlocked && new Date(restaurant.preview_expires_at).getTime() < Date.now();
+    const unlocked = true;
+    const expired = false;
 
     const { data: categories } = await db
       .from("categories")
@@ -218,15 +216,12 @@ export const getPublicMenu = createServerFn({ method: "GET" })
       .eq("restaurant_id", restaurant.id)
       .order("position");
 
-    let seen = 0;
     const grouped = (categories ?? []).map((c) => ({
       id: c.id,
       name: c.name,
       dishes: (dishes ?? [])
         .filter((d) => d.category_id === c.id)
         .map((d) => {
-          const locked = !unlocked && seen >= FREE_VISIBLE_DISHES;
-          seen += 1;
           return {
             id: d.id,
             name: d.name,
@@ -234,7 +229,7 @@ export const getPublicMenu = createServerFn({ method: "GET" })
             price: d.price,
             imagePath: d.image_url,
             available: d.available,
-            locked,
+            locked: false,
           };
         }),
     }));
