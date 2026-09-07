@@ -179,3 +179,124 @@
     color-mix(in oklch, var(--color-primary) 14%, transparent) 180px
   );
 }
+
+/* ── Landing "Gourmet dark motion" ───────────────────────────── */
+
+@theme inline {
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --color-landing: var(--landing-bg);
+  --color-landing-soft: var(--landing-soft);
+  --color-landing-panel: var(--landing-panel);
+  --color-landing-line: var(--landing-line);
+  --color-landing-foreground: var(--landing-fg);
+  --color-landing-muted: var(--landing-muted);
+  --color-landing-subtle: var(--landing-subtle);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-line: var(--paper-line);
+  --shadow-fire: 0 18px 44px -18px color-mix(in oklch, var(--color-primary) 65%, transparent);
+  --shadow-deep: 0 30px 70px -30px oklch(0 0 0 / 0.75);
+  --spacing-13: 3.25rem;
+  --spacing-18: 4.5rem;
+}
+
+.landing-dark {
+  --landing-bg: oklch(0.16 0.006 60);
+  --landing-soft: oklch(0.19 0.008 55);
+  --landing-panel: oklch(0.23 0.01 55);
+  --landing-line: oklch(1 0 0 / 12%);
+  --landing-fg: oklch(0.97 0.006 90);
+  --landing-muted: oklch(0.75 0.012 80);
+  --landing-subtle: oklch(0.58 0.012 80);
+  --paper: oklch(0.95 0.012 90);
+  --paper-ink: oklch(0.24 0.01 60);
+  --paper-line: oklch(0.78 0.012 80);
+  --primary: oklch(0.71 0.19 41);
+  --primary-foreground: oklch(0.16 0.02 41);
+  --ring: oklch(0.71 0.19 41);
+  color-scheme: dark;
+}
+
+@utility hero-grid {
+  background-image:
+    radial-gradient(60rem 40rem at 70% 0%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 70%),
+    linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 68px 68px, 68px 68px;
+}
+
+@utility image-shade {
+  background: linear-gradient(to top, oklch(0.14 0.006 60 / 0.95), transparent 65%);
+}
+
+@utility menu-phone {
+  border-radius: 1.75rem;
+  animation: menuai-float 7s ease-in-out infinite;
+}
+
+@utility hero-orbit {
+  border-radius: 2.25rem;
+  animation: menuai-orbit 9s ease-in-out infinite;
+}
+
+@utility section-kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+@utility step-card {
+  border-radius: 1.25rem;
+}
+
+@utility step-pulse {
+  animation: menuai-pulse 1.8s ease-in-out infinite;
+}
+
+@utility step-line {
+  animation: menuai-line 7.8s linear infinite;
+  transform-origin: left center;
+}
+
+@utility style-card {
+  border-radius: 1.25rem;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.style-card:hover {
+  transform: translateY(-6px);
+}
+.style-sun {
+  background: linear-gradient(150deg, oklch(0.72 0.17 55), oklch(0.55 0.19 30));
+  color: oklch(0.16 0.02 40);
+}
+.style-gold {
+  background: linear-gradient(150deg, oklch(0.28 0.02 70), oklch(0.18 0.01 60));
+  color: oklch(0.9 0.06 85);
+}
+.style-fresh {
+  background: linear-gradient(150deg, oklch(0.8 0.13 160), oklch(0.62 0.12 200));
+  color: oklch(0.18 0.02 200);
+}
+
+@keyframes menuai-orbit {
+  0%, 100% { transform: rotate(-1.2deg) scale(1); opacity: 0.7; }
+  50% { transform: rotate(1.2deg) scale(1.02); opacity: 1; }
+}
+
+@keyframes menuai-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+@keyframes menuai-line {
+  0% { width: 0%; }
+  33% { width: 50%; }
+  66% { width: 100%; }
+  100% { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-phone, .hero-orbit, .step-pulse, .step-line { animation: none; }
+}
