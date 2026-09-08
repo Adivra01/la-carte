@@ -461,3 +461,137 @@ export const setMenuTheme = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+/* -------------------------------------------------------------------------- */
+/* Édition : restaurant, catégories, plats, photos                            */
+/* -------------------------------------------------------------------------- */
+
+async function restaurantByToken(token: string) {
+  const db = await admin();
+  const { data: restaurant } = await db
+    .from("restaurants")
+    .select("id")
+    .eq("admin_token", token)
+    .maybeSingle();
+  if (!restaurant) throw new Error("Lien d'administration invalide");
+  return { db, restaurantId: restaurant.id as string };
+}
+
+export const updateRestaurant = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().min(10),
+        name: z.string().min(2).optional(),
+        city: z.string().nullable().optional(),
+        whatsapp: z.string().nullable().optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { db, restaurantId } = await restaurantByToken(data.token);
+    const patch: { name?: string; city?: string | null; whatsapp?: string | null } = {};
+    if (data.name !== undefined) patch.name = data.name;
+    if (data.city !== undefined) patch.city = data.city;
+    if (data.whatsapp !== undefined) patch.whatsapp = data.whatsapp;
+    const { error } = await db.from("restaurants").update(patch).eq("id", restaurantId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const renameCategory = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().min(10),
+        categoryId: z.string().uuid(),
+        name: z.string().min(1),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { db, restaurantId } = await restaurantByToken(data.token);
+    const { error } = await db
+      .from("categories")
+      .update({ name: data.name })
+      .eq("id", data.categoryId)
+      .eq("restaurant_id", restaurantId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteDish = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().min(10), dishId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { db, restaurantId } = await restaurantByToken(data.token);
+    const { error } = await db
+      .from("dishes")
+      .delete()
+      .eq("id", data.dishId)
+      .eq("restaurant_id", restaurantId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/** Remplace la photo d'un plat par une image envoyée par le restaurateur. */
+export const uploadDishPhoto = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().min(10),
+        dishId: z.string().uuid(),
+        mime: z.enum(["image/png", "image/jpeg", "image/webp"]),
+        base64: z.string().min(1),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { db, restaurantId } = await restaurantByToken(data.token);
+    const { data: dish } = await db
+      .from("dishes")
+      .select("id")
+      .eq("id", data.dishId)
+      .eq("restaurant_id", restaurantId)
+      .maybeSingle();
+    if (!dish) throw new Error("Plat introuvable");
+
+    const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    if (bytes.byteLength > 8 * 1024 * 1024) throw new Error("Image trop lourde (8 Mo maximum).");
+
+    const ext = data.mime === "image/jpeg" ? "jpg" : data.mime === "image/webp" ? "webp" : "png";
+    const path = `${restaurantId}/${data.dishId}-${Date.now()}.${ext}`;
+
+    const { uploadDishImage } = await import("./menuai.server");
+    await uploadDishImage(path, bytes, data.mime);
+    const { error } = await db.from("dishes").update({ image_url: path }).eq("id", data.dishId);
+    if (error) throw new Error(error.message);
+    return { imagePath: path };
+  });
+
+/** Refait la photo IA d'un plat (à partir de son nom et de ses ingrédients). */
+export const regenerateDishImage = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().min(10), dishId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { db, restaurantId } = await restaurantByToken(data.token);
+    const { data: dish } = await db
+      .from("dishes")
+      .select("id, name, ingredients")
+      .eq("id", data.dishId)
+      .eq("restaurant_id", restaurantId)
+      .maybeSingle();
+    if (!dish) throw new Error("Plat introuvable");
+
+    const { generateDishImage, uploadDishImage } = await import("./menuai.server");
+    const bytes = await generateDishImage(dish.name, dish.ingredients ?? []);
+    if (!bytes) throw new Error("La photo n'a pas pu être générée. Réessaie dans un instant.");
+
+    const path = `${restaurantId}/${dish.id}-${Date.now()}.png`;
+    await uploadDishImage(path, bytes);
+    const { error } = await db.from("dishes").update({ image_url: path }).eq("id", dish.id);
+    if (error) throw new Error(error.message);
+    return { imagePath: path };
+  });

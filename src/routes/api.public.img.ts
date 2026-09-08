@@ -11,9 +11,17 @@ export const Route = createFileRoute("/api/public/img")({
         const bytes = await downloadDishImage(path);
         if (!bytes) return new Response("Not found", { status: 404 });
 
+        const ext = path.split(".").pop()?.toLowerCase();
+        const type =
+          ext === "jpg" || ext === "jpeg"
+            ? "image/jpeg"
+            : ext === "webp"
+              ? "image/webp"
+              : "image/png";
+
         return new Response(bytes, {
           headers: {
-            "content-type": "image/png",
+            "content-type": type,
             "cache-control": "public, max-age=31536000, immutable",
           },
         });
