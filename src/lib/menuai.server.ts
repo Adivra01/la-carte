@@ -158,11 +158,15 @@ export async function generateDishImage(
   return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }
 
-export async function uploadDishImage(path: string, bytes: Uint8Array): Promise<string> {
+export async function uploadDishImage(
+  path: string,
+  bytes: Uint8Array,
+  contentType = "image/png",
+): Promise<string> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin.storage
     .from("dish-images")
-    .upload(path, bytes, { contentType: "image/png", upsert: true });
+    .upload(path, bytes, { contentType, upsert: true });
   if (error) throw new Error(error.message);
   return path;
 }
